@@ -16,12 +16,14 @@ server.use(express.json());
 //
 //Routes
 const actionRoutes = require('./routes/actionRoutes');
+const projectRoutes = require('./routes/projectRoutes');
 
 server.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
 server.use('/actions', actionRoutes);
+server.use('/projects', projectRoutes);
 
 //
 //Error handler
