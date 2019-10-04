@@ -36,6 +36,24 @@ router.post('/', validateProjectBody, async (req, res) => {
 });
 
 //
+//update project
+router.put('/:id', validateProjectBody, validateProjectId, async (req, res) => {
+    let project = req.body;
+    let { id } = req.params;
+
+    let updatedProject = await db.update(id, project);
+    if (!updatedProject || updatedProject == null) {
+        res.status(500).json({
+            message: 'There was an error updating the project',
+        });
+    }
+    res.status(200).json({
+        message: 'Successfully updated project',
+        project: updatedProject,
+    });
+});
+
+//
 //middleware
 async function validateProjectId(req, res, next) {
     let { id } = req.params;
