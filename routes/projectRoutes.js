@@ -21,7 +21,7 @@ router.get('/:id', validateProjectId, (req, res) => {
 
 //
 //Insert new project
-router.post('/', async (req, res) => {
+router.post('/', validateProjectBody, async (req, res) => {
     let project = req.body;
     let createdProject = await db.insert(project);
     if (!createdProject || createdProject == null) {
@@ -45,6 +45,15 @@ async function validateProjectId(req, res, next) {
         next('No project exists with that ID');
     }
     req.project = project;
+    next();
+}
+
+function validateProjectBody(req, res, next) {
+    let project = req.body;
+
+    if (!project.name || !project.description) {
+        next('Missing name or description to create new project');
+    }
     next();
 }
 
