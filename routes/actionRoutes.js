@@ -22,7 +22,7 @@ router.get('/:id', validateActionId, (req, res) => {
 
 //
 //Insert new action
-router.post('/', validateProjectId, async (req, res) => {
+router.post('/', validateActionBody, validateProjectId, async (req, res) => {
     let action = req.body;
     let createdAction = await db.insert(action);
     if (!createdAction || createdAction == null) {
@@ -35,18 +35,24 @@ router.post('/', validateProjectId, async (req, res) => {
 
 //
 //update an action
-router.put('/:id', validateActionId, validateProjectId, async (req, res) => {
-    let action = req.body;
-    let { id } = req.params;
+router.put(
+    '/:id',
+    validateActionBody,
+    validateActionId,
+    validateProjectId,
+    async (req, res) => {
+        let action = req.body;
+        let { id } = req.params;
 
-    let updatedAction = await db.update(id, action);
-    if (!updatedAction || updatedAction == null) {
-        res.status(500).json({
-            message: 'There was an error updating the action',
-        });
+        let updatedAction = await db.update(id, action);
+        if (!updatedAction || updatedAction == null) {
+            res.status(500).json({
+                message: 'There was an error updating the action',
+            });
+        }
+        res.status(200).json(updatedAction);
     }
-    res.status(200).json(updatedAction);
-});
+);
 
 //
 //Delete action
@@ -82,6 +88,15 @@ async function validateProjectId(req, res, next) {
     if (!project || project == null) {
         next('No project exists with that ID');
     }
+    next();
+}
+function validateActionBody(req, res, next) {
+    let action = req.body;
+
+    if (!action.project_id || !action.description || !action.notes) {
+        next('Missing project id or description or notes. Please add');
+    }
+
     next();
 }
 
