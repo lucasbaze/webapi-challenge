@@ -49,6 +49,21 @@ router.put('/:id', validateActionId, validateProjectId, async (req, res) => {
 });
 
 //
+//Delete action
+router.delete('/:id', validateActionId, async (req, res) => {
+    let { id } = req.params;
+    let status = await db.remove(id);
+    if (!status) {
+        res.status(500).json({
+            message: 'There was an error removing that action',
+        });
+    }
+    res.status(200).json({
+        message: `Successfully removed action ${id}`,
+    });
+});
+
+//
 //middleware
 async function validateActionId(req, res, next) {
     let { id } = req.params;
