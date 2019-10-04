@@ -13,4 +13,16 @@ router.get('/', async (req, res) => {
     res.status(200).json(projects);
 });
 
+//
+//middleware
+async function validateProjectId(req, res, next) {
+    let { id } = req.params;
+
+    let project = await db.get(id);
+    if (!project || project == null) {
+        next('No project exists with that ID');
+    }
+    next();
+}
+
 module.exports = router;
