@@ -15,6 +15,13 @@ server.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+server.use((err, req, res, next) => {
+    res.json({
+        message: 'There was an error',
+        error: err,
+    });
+});
+
 let PORT = process.env.PORT || 8080;
 
 server.listen(PORT, () => {
